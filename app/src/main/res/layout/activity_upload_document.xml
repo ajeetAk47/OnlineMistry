@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/uploadDocument_toolbar"
+        layout="@layout/app_bar"></include>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/uploadDocument_toolbar">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+
+
+    <TextView
+        android:id="@+id/TVAadarCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Aadhar Card"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_marginLeft="20dp"
+        android:textColor="@color/colorBlue"
+        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/TVAadarCardLinearLayout"
+            android:layout_below="@+id/TVAadarCard"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="@color/colorPrimary"
+            android:elevation="20dp"
+            android:orientation="horizontal">
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLength="12"
+                android:id="@+id/input_aadharNumber"
+                android:hint="Enter Aadhar Number"
+                android:inputType="number"
+                android:textColor="#fff"
+                android:textColorHint="#fff"
+                />
+            <Button
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="gravity"
+                android:id="@+id/upload_aadharNumber"
+                android:layout_marginLeft="20dp"
+                android:text="Upload"
+                android:background="#d67601"
+                android:textColor="#fff"/>
+        </LinearLayout>
+
+
+
+
+
+
+        <TextView
+            android:id="@+id/TVPanCard"
+            android:layout_below="@id/TVAadarCardLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pan Card"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/colorBlue"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/TVPanCard"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="@color/colorPrimary"
+            android:id="@+id/panLinearLayout"
+            android:elevation="20dp"
+            android:orientation="horizontal">
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLength="10"
+                android:inputType="textCapCharacters"
+                android:id="@+id/input_panNumber"
+                android:hint="Enter Pancard Number"
+                android:textColor="#fff"
+                android:textColorHint="#fff"
+                />
+            <Button
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="gravity"
+                android:layout_marginLeft="40dp"
+                android:text="Upload"
+                android:id="@+id/upload_panNumber"
+                android:background="#d67601"
+                android:textColor="#fff"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/panLinearLayout"
+            android:id="@+id/gstLinearLayout"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="@color/colorPrimary"
+            android:elevation="20dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textCapCharacters"
+                android:text="GST Number "
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"
+                />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLength="15"
+                android:layout_marginLeft="20dp"
+                android:inputType="textCapCharacters"
+                android:id="@+id/input_gstNumber"
+                android:hint="Enter GST No."
+                android:textColor="#fff"
+                android:textColorHint="#fff"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/gstLinearLayout"
+            android:id="@+id/ShopRegistrationId"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="@color/colorPrimary"
+            android:elevation="20dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textCapCharacters"
+                android:text="Shop Licence ID"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"
+                />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLength="15"
+                android:layout_marginLeft="20dp"
+                android:inputType="textCapCharacters"
+                android:id="@+id/inputRegistration_Id"
+                android:hint="Enter Licence No."
+                android:textColor="#fff"
+                android:textColorHint="#fff"
+                />
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ShopRegistrationId"
+            android:id="@+id/shopWorkingTime"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="@color/colorPrimary"
+            android:elevation="20dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvWorking"
+                android:text="Working Hours"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/openingTime"
+                android:text="Opening"
+                android:textColor="@color/colorBlue"
+                android:textSize="20sp"
+                />
+
+            <TextView
+                android:id="@+id/closingTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="0dp"
+                android:text="Closing"
+                android:textSize="20sp"
+                android:textColor="@color/colorBlue"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_below="@id/shopWorkingTime"
+            android:text="**Upload Photo of Pancard and Aadhar Card"
+            android:textColor="#DD1515"
+            android:textSize="15sp"
+            android:textAlignment="center"
+            android:textStyle="bold"/>
+
+
+
+
+    </RelativeLayout>
+    </ScrollView>
+
+
+    <Button
+        android:id="@+id/SaveDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        android:background="#d67601"
+        android:text="Save Details "
+        android:textColor="#fff"
+        android:textSize="18sp" />
+
+</RelativeLayout>
