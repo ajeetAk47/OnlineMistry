@@ -20,7 +20,7 @@ public class WorkerActivity extends AppCompatActivity {
     private TabLayout myTabLayout;
     private TabsAccessorAdapter mytabsAccessorAdapter;
     private FirebaseUser currentUser;
-    private static final String TAG = "Test";
+    private static final String TAG = "Worker";
     private FirebaseAuth mAuth;
     private DatabaseReference regRef;
     String currentUserID;

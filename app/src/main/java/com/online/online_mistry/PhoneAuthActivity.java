@@ -77,7 +77,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
                     String phoneNumber="+91"+InputPhoneNumber.getText().toString();
 
-                    if(TextUtils.isEmpty(phoneNumber)){
+                    if(phoneNumber=="+91"){
                         Toast.makeText(PhoneAuthActivity.this,"Please Enter Phone Number...",Toast.LENGTH_SHORT).show();
                     }
                     else{
@@ -224,7 +224,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
                                             }
                                         });
                                         authBuiler.show();
-                                       ;
+
                                     }
                                     else if (dataSnapshot.child(currentUserID).hasChild("Shop Name")){
                                         loadingBar.dismiss();
@@ -241,8 +241,25 @@ public class PhoneAuthActivity extends AppCompatActivity {
                                             }
                                         });
                                         authBuiler.show();
-
                                     }
+                                  /*  else if(dataSnapshot.hasChild(currentUserID) && !dataSnapshot.child(currentUserID).hasChild("Shop Name")){
+                                        RootRef.child("Shops").child(currentUserID).setValue("");
+                                        loadingBar.dismiss();
+                                        InputVerificationCode.setVisibility(View.INVISIBLE);
+                                        VerifyButton.setVisibility(View.INVISIBLE);
+                                        authBuiler.setTitle("Welcome Dear User");
+                                        authBuiler.setMessage("Hope you like our service");
+                                        authBuiler.setCancelable(false);
+                                        authBuiler.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                SendUserToPhoneSignInActivity();
+
+                                            }
+                                        });
+                                        authBuiler.show();
+
+                                    }*/
                                     else {
                                         mAuth.signOut();
                                         loadingBar.dismiss();

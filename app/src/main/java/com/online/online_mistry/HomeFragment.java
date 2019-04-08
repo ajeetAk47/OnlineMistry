@@ -2,10 +2,7 @@ package com.online.online_mistry;
 
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -21,23 +18,21 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,7 +41,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import static android.content.Context.LOCATION_SERVICE;
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 
 /**
@@ -56,15 +50,14 @@ import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 public class HomeFragment extends Fragment implements OnMapReadyCallback, LocationListener {
     private GoogleMap mMap;
     private View HomeView;
+    TextView path;
     private FirebaseAuth mAuth;
     private String currentUserID;
     private static final int PERMISSION_REQUEST_CODE = 1;
     private TextView CheckVerified;
     private DatabaseReference verRef;
-    double longitude, latitude;
     private LocationManager locationManager;
     MyLocationListener listener;
-    FusedLocationProviderClient client;
     private Boolean mLocationPermissionGranted = false;
 
     public HomeFragment() {
@@ -81,9 +74,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         HomeView = inflater.inflate(R.layout.fragment_home, container, false);
         //CheckVerified=HomeView.findViewById(R.id.textVerified);
         mAuth = FirebaseAuth.getInstance();
+        path=HomeView.findViewById( R.id.path );
 
         // checkVerification();
 
+        requestPermission();
+        checkPermission();
         listener=new MyLocationListener( getActivity() );
 
 
@@ -108,6 +104,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                 //  } );
                 //    */
                 mLocationPermissionGranted=true;
+                getAds();
+                listener=new MyLocationListener( getActivity() );
             }
             else {
                 ActivityCompat.requestPermissions( getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1 );
@@ -120,6 +118,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
 
         return HomeView;
+    }
+
+    private void getAds()
+    {
+        String s=listener.getAddress();
+        if(!s.isEmpty())
+        {   path.setVisibility( View.VISIBLE );
+            path.setText( s );
+
+        }
+        else{
+            path.setVisibility(View.INVISIBLE);
+        }
+
+
     }
 
     private void checkVerification() {
@@ -154,121 +167,74 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setTrafficEnabled(true);
+        mMap.setIndoorEnabled(false);
+        mMap.setBuildingsEnabled(false);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
         if (ActivityCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        //mMap.setMyLocationEnabled( true );
-         getCurrentLocation();
+      /*  Criteria criteria = new Criteria();
+        String s = locationManager.getBestProvider(criteria, true);
 
-        if(listener.getIsGPSTrackingEnabled())
-        {
-            myLocationmethod();
+        Location location = locationManager.getLastKnownLocation(s);*/
+
+        locationManager = (LocationManager)  getContext().getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        String bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true)).toString();
+        Log.d("Best ",bestProvider);
+
+        //You can still do this if you like, you might get lucky:
+        Location location = locationManager.getLastKnownLocation(bestProvider);
+         mMap.setMyLocationEnabled( true );
+         mMap.setTrafficEnabled(true);
+
+
+        //getCurrentLocation();
+
+
+
+          // mMap.clear();
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            mMap.addMarker( new MarkerOptions()
+                    .position(latLng)
+                    .title( "My Location" )
+                  .icon( BitmapDescriptorFactory.fromResource( R.drawable.mymarker) ));
+            //.icon( BitmapDescriptorFactory.defaultMarker() ) );
+            mMap.moveCamera( CameraUpdateFactory.newLatLng( latLng ) );
+            mMap.animateCamera( CameraUpdateFactory.zoomTo( 17) );
 
             /*mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ltt,11)*/
-        }
-        else
-        {
-            Toast.makeText( getActivity(), "Please enable GPS And Restart Application", Toast.LENGTH_SHORT ).show();
-        }
+
+
+     /*   LatLng Mathura = new LatLng(27.606079, 77.593350);
+        mMap.addMarker(new MarkerOptions().position(Mathura).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(Mathura));
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));*/
 
     }
 
-    public void myLocationmethod()
-    {
-        this.latitude=listener.getlatitude();
-        this.longitude=listener.getlongitude();
-        LatLng ltt = new LatLng( latitude, longitude );
-        mMap.clear();
-        mMap.addMarker( new MarkerOptions()
-                .position( ltt )
-                .title( "My Location" )
-                .icon( BitmapDescriptorFactory.fromResource( R.drawable.mymarker ) ));
-        //.icon( BitmapDescriptorFactory.defaultMarker() ) );
-        mMap.moveCamera( CameraUpdateFactory.newLatLng( ltt ) );
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 14) );
-
-    }
-
-    private void getCurrentLocation(){
-
-        client= LocationServices.getFusedLocationProviderClient(getActivity());
-        try{
-            if(mLocationPermissionGranted){
-                Task task=client.getLastLocation();
-                task.addOnCompleteListener(new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if (task.isSuccessful()){
-
-                            Location currentLocation=(Location)task.getResult();
-                            Navigatecamera(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()),14,"My Location");
-
-                        }else {
-
-                            Toast.makeText(getActivity(),"unable to get current location",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        }catch (SecurityException e){
-
-        }
-
-    }
-
-    private void Navigatecamera(LatLng latLng,float zoom,String title){
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
-        MarkerOptions options = new MarkerOptions().position(latLng).title(title);
-        mMap.addMarker(options);
 
 
-    }
-    private void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION )) {
-                new AlertDialog.Builder( getActivity() )
-                        .setTitle( "give permission" )
-                        .setMessage( "it is important to give the permission" )
-                        .setPositiveButton( "OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                ActivityCompat.requestPermissions( getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1 );
-                            }
-                        } )
-                        .create()
-                        .show();
-            } else {
-                ActivityCompat.requestPermissions( getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1 );
-            }
+    private void requestPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+            Toast.makeText(getContext(), "GPS permission allows us to access location data. Please allow in App Settings for additional functionality.", Toast.LENGTH_LONG).show();
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
         }
     }
 
-    @SuppressLint("RestrictedApi")
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult( requestCode, permissions, grantResults );
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED) {
-
-                        mMap.setMyLocationEnabled( true );
-
-                        //do your work
-                    }
-                } else {
-                    checkLocationPermission();
-                    Toast.makeText( getActivity(), "Please provide the permission", Toast.LENGTH_LONG ).show();
-                }
-                break;
-            }
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            return false;
         }
-
     }
-
-
-
 
     @Override
     public void onLocationChanged(Location location) {
