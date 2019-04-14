@@ -119,6 +119,7 @@ public class PhoneSignInActivity extends AppCompatActivity {
             ShopMap.put("Notifications","");
             ShopMap.put("Image","");
             ShopMap.put("Notices","");
+            ShopMap.put("Status","Available");
             RootRef.child("Shops").child(currentUserID).setValue(ShopMap);
 
 

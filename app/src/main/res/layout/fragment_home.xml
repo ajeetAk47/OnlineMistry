@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- TODO: Update blank fragment layout -->
  <!--   <TextView
@@ -42,7 +42,7 @@
             />
     </LinearLayout>
 
-   <!-- <com.google.android.material.bottomnavigation.BottomNavigationView
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -51,9 +51,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
+            <com.suke.widget.SwitchButton
+                android:layout_margin="5dp"
+                android:id="@+id/status_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Status_Text"
+                android:text="Offline"
+                android:textStyle="bold"
+                android:textSize="30dp"
+                android:textColor="#D30D0D"/>
+
+
+
+
 
         </LinearLayout>
 
-    </com.google.android.material.bottomnavigation.BottomNavigationView>-->
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </RelativeLayout>

@@ -96,6 +96,7 @@ public class MechanicsSignIn extends AppCompatActivity {
             try{
 
                 RootRef.child("Shops").child(currentUserID).child("Mechanic Name").setValue(StringMechanicsName);
+                RootRef.child("Shops").child(currentUserID).child("Status").setValue("Available");
                 sendUserToShopVerifyActivity();
 
             }catch (Exception e){

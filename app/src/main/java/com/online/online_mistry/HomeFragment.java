@@ -5,6 +5,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -29,18 +30,21 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.suke.widget.SwitchButton;
+import com.suke.widget.SwitchButton.OnCheckedChangeListener;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static com.online.online_mistry.AppStatus.context;
 
 
 /**
@@ -55,10 +59,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     private String currentUserID;
     private static final int PERMISSION_REQUEST_CODE = 1;
     private TextView CheckVerified;
-    private DatabaseReference verRef;
+    private DatabaseReference verRef, rootref;
     private LocationManager locationManager;
     MyLocationListener listener;
     private Boolean mLocationPermissionGranted = false;
+    private com.suke.widget.SwitchButton StatusButton;
+    private TextView StatusText;;
+    private FirebaseUser currentUser;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -66,7 +73,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
@@ -74,7 +81,28 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         HomeView = inflater.inflate(R.layout.fragment_home, container, false);
         //CheckVerified=HomeView.findViewById(R.id.textVerified);
         mAuth = FirebaseAuth.getInstance();
+        currentUserID = mAuth.getCurrentUser().getUid();
+        rootref = FirebaseDatabase.getInstance().getReference().child("Shops").child(currentUserID);
         path=HomeView.findViewById( R.id.path );
+        StatusButton=HomeView.findViewById(R.id.status_button);
+        StatusText=HomeView.findViewById(R.id.Status_Text);
+        CheckStatus();
+        StatusButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+                if (isChecked){
+                    StatusText.setText("Busy");
+                    rootref.child("Status").setValue("Busy");
+                    StatusText.setTextColor(getResources().getColor(R.color.offline));
+
+                }
+                else if (!isChecked){
+                    StatusText.setText("Available");
+                    StatusText.setTextColor(getResources().getColor(R.color.online));
+                    rootref.child("Status").setValue("Available");;
+                }
+            }
+        });
 
         // checkVerification();
 
@@ -118,6 +146,23 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
 
         return HomeView;
+    }
+
+    private void CheckStatus() {
+        String Status=getActivity().getIntent().getStringExtra("Status");
+        if (Status.equals("Available")){
+            StatusButton.setChecked(true);
+            StatusText.setText("Available");
+            StatusText.setTextColor(getResources().getColor(R.color.online));
+        }
+        else {
+            StatusButton.setChecked(false);
+            StatusText.setText("Busy");
+            StatusText.setTextColor(getResources().getColor(R.color.offline));
+        }
+
+
+
     }
 
     private void getAds()
@@ -177,27 +222,28 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         if (ActivityCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission( getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-      /*  Criteria criteria = new Criteria();
+
+
+        locationManager = (LocationManager)  getContext().getSystemService(Context.LOCATION_SERVICE);
+       /* Criteria criteria = new Criteria();
         String s = locationManager.getBestProvider(criteria, true);
 
         Location location = locationManager.getLastKnownLocation(s);*/
 
-        locationManager = (LocationManager)  getContext().getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
-        String bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true)).toString();
+        String bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true));
         Log.d("Best ",bestProvider);
 
         //You can still do this if you like, you might get lucky:
         Location location = locationManager.getLastKnownLocation(bestProvider);
-         mMap.setMyLocationEnabled( true );
-         mMap.setTrafficEnabled(true);
+        mMap.setMyLocationEnabled( true );
 
 
         //getCurrentLocation();
 
 
 
-          // mMap.clear();
+        mMap.clear();
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             mMap.addMarker( new MarkerOptions()
                     .position(latLng)

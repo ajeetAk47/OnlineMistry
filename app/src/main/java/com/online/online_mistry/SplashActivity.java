@@ -31,7 +31,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
         checkInternetConnection();
          mAuth=FirebaseAuth.getInstance();
         currentUser=mAuth.getCurrentUser();
@@ -56,12 +55,16 @@ public class SplashActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists() && dataSnapshot.hasChild("Owner ID")){
                                     Intent i = new Intent(SplashActivity.this, WorkerActivity.class);
+                                    String Status=dataSnapshot.child("Status").getValue().toString();
+                                    i.putExtra("Status",Status);
                                     startActivity(i);
                                     finish();
 
                                 }
                                 else{
                                     Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                                    String Status=dataSnapshot.child("Status").getValue().toString();
+                                    i.putExtra("Status",Status);
                                     startActivity(i);
                                     finish();
                                 }
@@ -86,19 +89,6 @@ public class SplashActivity extends AppCompatActivity {
                 }
             });
 
-            /*new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mAuth= FirebaseAuth.getInstance();
-                    currentUser=mAuth.getCurrentUser();
-                    // This method will be executed once the timer is over
-
-
-                    Intent i = new Intent(SplashActivity.this, MainActivity.class);
-                    startActivity(i);
-                    finish();
-                }
-            }, 2000);*/
 
 
 
