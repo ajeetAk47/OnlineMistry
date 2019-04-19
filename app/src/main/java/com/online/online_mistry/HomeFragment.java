@@ -99,7 +99,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                 else if (!isChecked){
                     StatusText.setText("Available");
                     StatusText.setTextColor(getResources().getColor(R.color.online));
-                    rootref.child("Status").setValue("Available");;
+                    rootref.child("Status").setValue("Available");
                 }
             }
         });
